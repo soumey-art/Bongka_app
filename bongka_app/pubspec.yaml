@@ -31,12 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  uuid: ^4.5.3
-  intl: ^0.20.2
-  provider: ^6.1.2
-  http: ^1.6.0
 
-  # Firebase (YOUR main job)
+  # Firebase
   firebase_core: ^3.1.0
   firebase_auth: ^5.1.0
   cloud_firestore: ^5.1.0
@@ -44,10 +40,10 @@ dependencies:
   # State management
   provider: ^6.1.2
 
-  # Biometric lock screen (device feature)
+  # Biometric
   local_auth: ^2.3.0
 
-  # HTTP for Google Safe Browsing API
+  # HTTP for Safe Browsing API
   http: ^1.2.1
 
   # Dark mode persistence

@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  crypto:
-    dependency: transitive
-    description:
-      name: crypto
-      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.7"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -161,14 +153,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.24.1"
-  fixnum:
-    dependency: transitive
-    description:
-      name: fixnum
-      sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -195,14 +179,11 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-<<<<<<< HEAD
   flutter_web_plugins:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
-=======
->>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
   http:
     dependency: "direct main"
     description:
@@ -220,13 +201,13 @@ packages:
     source: hosted
     version: "4.1.2"
   intl:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: intl
-      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      sha256: "1ca20c894b1717686a2319b8548763d812bc0aabdac580420a44c5178c57a867"
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.2"
+    version: "0.20.3"
   leak_tracker:
     dependency: transitive
     description:
@@ -339,7 +320,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-<<<<<<< HEAD
   path_provider_linux:
     dependency: transitive
     description:
@@ -380,8 +360,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-=======
->>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
   provider:
     dependency: "direct main"
     description:
@@ -390,7 +368,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5+1"
-<<<<<<< HEAD
   shared_preferences:
     dependency: "direct main"
     description:
@@ -447,8 +424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
-=======
->>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
   sky_engine:
     dependency: transitive
     description: flutter
@@ -510,14 +485,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  uuid:
-    dependency: "direct main"
-    description:
-      name: uuid
-      sha256: "1fef9e8e11e2991bb773070d4656b7bd5d850967a2456cfc83cf47925ba79489"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.5.3"
   vector_math:
     dependency: transitive
     description:
@@ -542,7 +509,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-<<<<<<< HEAD
   xdg_directories:
     dependency: transitive
     description:
@@ -551,8 +517,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-=======
->>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
 sdks:
   dart: ">=3.12.0 <4.0.0"
   flutter: ">=3.44.0"
