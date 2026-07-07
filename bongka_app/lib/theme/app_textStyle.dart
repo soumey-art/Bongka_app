@@ -29,8 +29,4 @@ class TextStyles {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
