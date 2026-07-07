@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:provider/provider.dart';
 import 'package:pract_app/theme/app_color.dart';
 import 'package:pract_app/theme/app_textStyle.dart';
 import 'package:pract_app/provider/auth_provider.dart';
+=======
+import '../../../theme/app_color.dart';
+import '../../../theme/app_textStyle.dart';
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +20,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+<<<<<<< HEAD
   bool _isSubmitting = false;
+=======
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
 
   @override
   void dispose() {
@@ -24,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+<<<<<<< HEAD
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -55,6 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
+=======
+  void _handleLogin() {
+    // TODO: hook up your authentication logic here
+    debugPrint('Email: ${_emailController.text}');
+    debugPrint('Password: ${_passwordController.text}');
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
   }
 
   @override
@@ -77,7 +92,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 72,
                       height: 72,
                       decoration: BoxDecoration(
+<<<<<<< HEAD
                         color: AppColors.blueColor.withValues(alpha: 0.1),
+=======
+                        color: AppColors.blueColor.withOpacity(0.1),
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
                         borderRadius: BorderRadius.circular(18),
                       ),
                       child: Icon(
@@ -214,7 +233,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
+<<<<<<< HEAD
                   onPressed: _isSubmitting ? null : _handleLogin,
+=======
+                  onPressed: _handleLogin,
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.blueColor,
                     foregroundColor: Colors.white,
@@ -223,6 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+<<<<<<< HEAD
                   child: _isSubmitting
                       ? const SizedBox(
                           width: 22,
@@ -238,6 +262,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             letterSpacing: 0.5,
                           ),
                         ),
+=======
+                  child: Text(
+                    'LOGIN',
+                    style: TextStyles.buttonStyle.copyWith(letterSpacing: 0.5),
+                  ),
+>>>>>>> 155565cc5fe36546ef9c6118ccee665d19a5ba0f
                 ),
               ),
 
