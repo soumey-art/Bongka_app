@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
@@ -6,9 +7,16 @@ import '../../../theme/app_textStyle.dart';
 enum _PinStage { enter, confirm }
 
 class PinSetupScreen extends StatefulWidget {
-  const PinSetupScreen({super.key, this.pinLength = 6});
+  const PinSetupScreen({
+    super.key,
+    this.pinLength = 6,
+    this.maxAttempts = 3,
+    this.lockoutSeconds = 10,
+  });
 
   final int pinLength;
+  final int maxAttempts;
+  final int lockoutSeconds;
 
   @override
   State<PinSetupScreen> createState() => _PinSetupScreenState();
@@ -20,7 +28,20 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
   String _currentInput = '';
   String? _errorMessage;
 
+  int _failedAttempts = 0;
+  Timer? _lockoutTimer;
+  int _secondsRemaining = 0;
+
+  bool get _isLockedOut => _secondsRemaining > 0;
+
+  @override
+  void dispose() {
+    _lockoutTimer?.cancel();
+    super.dispose();
+  }
+
   void _onKeyTap(String digit) {
+    if (_isLockedOut) return;
     if (_currentInput.length >= widget.pinLength) return;
 
     setState(() {
@@ -34,6 +55,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
   }
 
   void _onBackspace() {
+    if (_isLockedOut) return;
     if (_currentInput.isEmpty) return;
     setState(() {
       _currentInput = _currentInput.substring(0, _currentInput.length - 1);
@@ -42,6 +64,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
 
   void _handleComplete() {
     if (_stage == _PinStage.enter) {
+      // Move to confirm stage
       _firstPin = _currentInput;
       Future.delayed(const Duration(milliseconds: 150), () {
         if (!mounted) return;
@@ -51,7 +74,9 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
         });
       });
     } else {
+      // Confirm stage: compare against first PIN
       if (_currentInput == _firstPin) {
+        _failedAttempts = 0;
         Future.delayed(const Duration(milliseconds: 150), () {
           if (!mounted) return;
           /*Navigator.pushReplacement(
@@ -60,14 +85,53 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
           );*/
         });
       } else {
-        setState(() {
-          _errorMessage = 'PINs do not match. Try again.';
-          _stage = _PinStage.enter;
-          _firstPin = '';
-          _currentInput = '';
-        });
+        _failedAttempts++;
+
+        if (_failedAttempts >= widget.maxAttempts) {
+          _startLockout();
+        } else {
+          setState(() {
+            final remaining = widget.maxAttempts - _failedAttempts;
+            _errorMessage =
+                'PINs do not match. $remaining attempt${remaining == 1 ? '' : 's'} left.';
+            _stage = _PinStage.enter;
+            _firstPin = '';
+            _currentInput = '';
+          });
+        }
       }
     }
+  }
+
+  void _startLockout() {
+    setState(() {
+      _stage = _PinStage.enter;
+      _firstPin = '';
+      _currentInput = '';
+      _secondsRemaining = widget.lockoutSeconds;
+      _errorMessage = 'Too many attempts. Try again in $_secondsRemaining s';
+    });
+
+    _lockoutTimer?.cancel();
+    _lockoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      setState(() {
+        _secondsRemaining--;
+        if (_secondsRemaining <= 0) {
+          _secondsRemaining = 0;
+          _failedAttempts = 0;
+          _errorMessage = null;
+          timer.cancel();
+        } else {
+          _errorMessage =
+              'Too many attempts. Try again in $_secondsRemaining s';
+        }
+      });
+    });
   }
 
   @override
@@ -79,7 +143,6 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            // Keeps a phone-like width even on wide desktop/web windows
             constraints: const BoxConstraints(maxWidth: 380),
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -96,7 +159,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: AppColors.blueColor.withOpacity(0.1),
+                      color: AppColors.blueColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Icon(
@@ -147,16 +210,26 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                     const SizedBox(height: 12),
                     Text(
                       _errorMessage!,
+                      textAlign: TextAlign.center,
                       style: TextStyles.smallStyle.copyWith(
                         color: AppColors.redColor,
+                        fontWeight: _isLockedOut
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ],
 
                   const SizedBox(height: 32),
 
-                  // Numeric keypad - fixed circle size, doesn't stretch
-                  _buildKeypad(),
+                  // Numeric keypad
+                  Opacity(
+                    opacity: _isLockedOut ? 0.4 : 1.0,
+                    child: IgnorePointer(
+                      ignoring: _isLockedOut,
+                      child: _buildKeypad(),
+                    ),
+                  ),
 
                   const SizedBox(height: 16),
                 ],
