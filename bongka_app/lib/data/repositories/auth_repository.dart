@@ -64,6 +64,15 @@ class AuthRepository {
     return _auth.currentUser;
   }
 
+  //SAVE PIN- persists a hashed PIN for the current user
+  Future<void> savePin(String hashedPin) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw StateError('No signed-in user to save a PIN for.');
+    }
+    await _firestore.savePinHash(user.uid, hashedPin);
+  }
+
   // CHANGE PASSWORD
   Future<void> changePassword(
     String currentPassword,

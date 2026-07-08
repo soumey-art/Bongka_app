@@ -3,12 +3,14 @@ class UserModel {
   final String email;
   final String displayName;
   final int cyberSafetyScore;
+  final String? pinHash;
 
   UserModel({
     required this.id,
     required this.email,
     required this.displayName,
     required this.cyberSafetyScore,
+    this.pinHash
   });
 
   // Used when SAVING to Firestore (CREATE)
@@ -16,6 +18,7 @@ class UserModel {
     'email': email,
     'displayName': displayName,
     'cyberSafetyScore': cyberSafetyScore,
+    if(pinHash != null) 'pinHash' : pinHash,
   };
 
   // Used when READING from Firestore (READ)
@@ -25,6 +28,7 @@ class UserModel {
       email: map['email'] ?? '',
       displayName: map['displayName'] ?? '',
       cyberSafetyScore: map['cyberSafetyScore'] ?? 100,
+      pinHash: map['pinHash'] as String,
     );
   }
 }

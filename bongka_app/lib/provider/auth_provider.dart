@@ -44,6 +44,23 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  //SAVE PIN
+  Future<void> savePin(String hashedPin) async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      await _authRepo.savePin(hashedPin);
+    } catch (e) {
+      error = e.toString();
+      rethrow;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // SIGN OUT
   Future<void> signOut() async {
     await _authRepo.signOut();

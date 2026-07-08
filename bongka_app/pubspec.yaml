@@ -43,12 +43,14 @@ dependencies:
   # Biometric
   local_auth: ^2.3.0
 
+  # PIN hashing
+  crypto: ^3.0.3
+
   # HTTP for Safe Browsing API
   http: ^1.2.1
 
   # Dark mode persistence
   shared_preferences: ^2.3.0
-  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:

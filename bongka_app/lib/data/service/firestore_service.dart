@@ -26,4 +26,12 @@ class FirestoreService {
       'lastLoginAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
+  // Save a hashed PIN onto an existing profile. Only the hash is ever
+  // stored — never the raw PIN.
+  Future<void> savePinHash(String uid, String pinHash) async {
+    await _users.doc(uid).set({
+      'pinHash': pinHash,
+    }, SetOptions(merge: true));
+  }
 }
+

@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:pract_app/theme/app_color.dart';
 import 'package:pract_app/theme/app_textStyle.dart';
 import 'package:pract_app/provider/auth_provider.dart';
+import 'package:pract_app/ui/screen/auth/signup_screen.dart';
+import 'package:pract_app/ui/screen/auth/pin_setup.dart';
+import 'package:pract_app/ui/screen/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,12 +43,20 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await context.read<AuthProvider>().signIn(email, password);
       final user = context.read<AuthProvider>().currentUser;
-      debugPrint('LOGIN SUCCESS -> uid: ${user?.id}, email: ${user?.email}');
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Logged in as ${user?.email}')));
-      }
+
+      if (!mounted) return;
+
+      // Existing users with a PIN already set go straight in.
+      // Accounts without one yet (e.g. created before PIN setup
+      // existed) are sent to set one up, instead of landing in a
+      // half-configured state.
+      final hasPin = user?.pinHash != null && user!.pinHash!.isNotEmpty;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => hasPin ? const HomeScreen() : const PinSetupScreen(),
+        ),
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -238,6 +249,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             letterSpacing: 0.5,
                           ),
                         ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Don't have an account
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SignupScreen()),
+                    );
+                  },
+                  child: Text(
+                    "Don't have an account? Sign up",
+                    style: TextStyles.smallStyle.copyWith(
+                      color: AppColors.blueColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
 
