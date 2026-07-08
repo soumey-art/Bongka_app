@@ -6,7 +6,7 @@ import 'theme/app_theme.dart';
 import 'provider/auth_provider.dart';
 import 'provider/scan_provider.dart';
 import 'provider/theme_provider.dart';
-import 'ui/screen/auth/login_screen.dart';
+import 'ui/screen/auth/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             title: 'Bongkar',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
-            home: const LoginScreen(),
+            home: const SignupScreen(),
           );
         },
       ),
