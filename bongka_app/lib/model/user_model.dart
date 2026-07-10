@@ -28,7 +28,7 @@ class UserModel {
       email: map['email'] ?? '',
       displayName: map['displayName'] ?? '',
       cyberSafetyScore: map['cyberSafetyScore'] ?? 100,
-      pinHash: map['pinHash'] as String,
+      pinHash: map['pinHash'] as String?,
     );
   }
 }

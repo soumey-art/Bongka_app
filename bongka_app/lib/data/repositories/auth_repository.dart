@@ -72,18 +72,4 @@ class AuthRepository {
     }
     await _firestore.savePinHash(user.uid, hashedPin);
   }
-
-  // CHANGE PASSWORD
-  Future<void> changePassword(
-    String currentPassword,
-    String newPassword,
-  ) async {
-    final user = _auth.currentUser!;
-    final credential = EmailAuthProvider.credential(
-      email: user.email!,
-      password: currentPassword,
-    );
-    await user.reauthenticateWithCredential(credential);
-    await user.updatePassword(newPassword);
-  }
 }

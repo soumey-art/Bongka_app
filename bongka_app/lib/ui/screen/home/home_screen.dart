@@ -75,7 +75,6 @@ class _HomeTab extends StatelessWidget {
 
   final VoidCallback onViewReports;
 
-  // TODO: replace with real data from report_repository.dart once
   // scan history is wired up. Kept here as a single source so the
   // "threats detected" count below stays consistent with the list.
   static const List<_ActivityItem> _mockActivity = [
@@ -231,7 +230,7 @@ class _HomeTab extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.mail_outline,
-                title: 'Analyze Message',
+                title: 'Scan Message',
                 subtitle: 'Detect phishing',
                 filled: true,
                 onTap: () {
