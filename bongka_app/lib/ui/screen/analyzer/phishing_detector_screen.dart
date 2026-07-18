@@ -11,9 +11,9 @@ class PhishingDetectorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.blueDark,
         elevation: 0,
         foregroundColor: AppColors.textColor,
         title: Text('Analyze Message', style: TextStyles.headingStyle),

@@ -34,10 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: IndexedStack(index: _selectedIndex, children: tabs),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.surfaceColor,
         currentIndex: _selectedIndex,
         onTap: _goToTab,
         selectedItemColor: AppColors.blueColor,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: AppColors.textMuted,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
@@ -125,7 +126,10 @@ class _HomeTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         // Greeting
-        Text('Welcome Back,', style: TextStyles.smallStyle),
+        Text(
+          'Welcome Back,',
+          style: TextStyles.smallStyle.copyWith(color: AppColors.textSecondary),
+        ),
         const SizedBox(height: 2),
         Row(
           children: [
@@ -133,7 +137,7 @@ class _HomeTab extends StatelessWidget {
               user?.displayName.isNotEmpty == true
                   ? user!.displayName
                   : 'there',
-              style: TextStyles.titleStyle,
+              style: TextStyles.titleStyle.copyWith(color: AppColors.textColor),
             ),
             const SizedBox(width: 6),
             const Text('👋', style: TextStyle(fontSize: 20)),
@@ -146,15 +150,9 @@ class _HomeTab extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surfaceColor,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            border: Border.all(color: AppColors.surfaceBorder),
           ),
           child: Row(
             children: [
@@ -170,7 +168,7 @@ class _HomeTab extends StatelessWidget {
                       child: CircularProgressIndicator(
                         value: score / 100,
                         strokeWidth: 7,
-                        backgroundColor: const Color(0xFFE9EEF6),
+                        backgroundColor: AppColors.surfaceBorder,
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           AppColors.blueColor,
                         ),
@@ -179,6 +177,7 @@ class _HomeTab extends StatelessWidget {
                     Text(
                       '$score%',
                       style: TextStyles.bodyStyle.copyWith(
+                        color: AppColors.textColor,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -190,11 +189,18 @@ class _HomeTab extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Cyber Safety Score', style: TextStyles.smallStyle),
+                    Text(
+                      'Cyber Safety Score',
+                      style: TextStyles.smallStyle.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: 2),
                     Text(
                       '$threatsThisWeek threat${threatsThisWeek == 1 ? '' : 's'} detected this week',
-                      style: TextStyles.smallStyle,
+                      style: TextStyles.smallStyle.copyWith(
+                        color: AppColors.textMuted,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Container(
@@ -263,7 +269,10 @@ class _HomeTab extends StatelessWidget {
           children: [
             Text(
               'Recent Activity',
-              style: TextStyles.bodyStyle.copyWith(fontWeight: FontWeight.w700),
+              style: TextStyles.bodyStyle.copyWith(
+                color: AppColors.textColor,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             GestureDetector(
               onTap: onViewReports,
@@ -284,8 +293,9 @@ class _HomeTab extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surfaceColor,
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.surfaceBorder),
             ),
             child: Row(
               children: [
@@ -300,7 +310,10 @@ class _HomeTab extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.title,
-                    style: TextStyles.bodyStyle.copyWith(fontSize: 14),
+                    style: TextStyles.bodyStyle.copyWith(
+                      color: AppColors.textColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
                 Column(
@@ -327,7 +340,10 @@ class _HomeTab extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       item.timeAgo,
-                      style: TextStyles.smallStyle.copyWith(fontSize: 11),
+                      style: TextStyles.smallStyle.copyWith(
+                        color: AppColors.textMuted,
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),
@@ -342,8 +358,11 @@ class _HomeTab extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.blueColor.withValues(alpha: 0.08),
+            color: AppColors.blueColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: AppColors.blueColor.withValues(alpha: 0.3),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +383,10 @@ class _HomeTab extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Hover links before clicking — the real URL shows in your browser status bar.',
-                style: TextStyles.bodyStyle.copyWith(fontSize: 13),
+                style: TextStyles.bodyStyle.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                ),
               ),
             ],
           ),
@@ -391,8 +413,11 @@ class _ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color bg = filled ? AppColors.blueColor : Colors.white;
-    final Color fg = filled ? Colors.white : AppColors.textColor;
+    final Color bg = filled ? AppColors.blueColor : AppColors.surfaceColor;
+    final Color fg = filled ? AppColors.blueDark : AppColors.textColor;
+    final Color subFg = filled
+        ? AppColors.blueDark.withValues(alpha: 0.7)
+        : AppColors.textMuted;
 
     return Material(
       color: bg,
@@ -400,7 +425,13 @@ class _ActionCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
-        child: Padding(
+        child: Container(
+          decoration: filled
+              ? null
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.surfaceBorder),
+                ),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,9 +449,7 @@ class _ActionCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 subtitle,
-                style: TextStyles.smallStyle.copyWith(
-                  color: filled ? Colors.white70 : Colors.grey,
-                ),
+                style: TextStyles.smallStyle.copyWith(color: subFg),
               ),
             ],
           ),

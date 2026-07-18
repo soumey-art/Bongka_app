@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -88,12 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 72,
                       height: 72,
                       decoration: BoxDecoration(
-                        color: AppColors.blueColor.withValues(alpha: 0.1),
+                        color: AppColors.blueColor,
                         borderRadius: BorderRadius.circular(18),
                       ),
                       child: Icon(
                         Icons.shield_outlined,
-                        color: AppColors.blueColor,
+                        color: AppColors.blueDark,
                         size: 34,
                       ),
                     ),
@@ -101,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'BONGKA',
                       style: TextStyles.titleStyle.copyWith(
+                        color: AppColors.textColor,
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1.0,
@@ -109,7 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 6),
                     Text(
                       'Ethical Hacking & Phishing Simulator',
-                      style: TextStyles.smallStyle,
+                      style: TextStyles.smallStyle.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -118,24 +121,36 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 48),
 
               // Email label + field
-              Text('Email', style: TextStyles.bodyStyle),
+              Text(
+                'Email',
+                style: TextStyles.bodyStyle.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                style: TextStyles.bodyStyle.copyWith(fontSize: 14),
+                style: TextStyles.bodyStyle.copyWith(
+                  fontSize: 14,
+                  color: AppColors.textColor,
+                ),
                 decoration: InputDecoration(
                   hintText: 'user@gmail.com',
-                  hintStyle: TextStyles.smallStyle,
+                  hintStyle: TextStyles.smallStyle.copyWith(
+                    color: AppColors.textMuted,
+                  ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surfaceColor,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: const BorderSide(
+                      color: AppColors.surfaceBorder,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -143,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: const BorderSide(
+                      color: AppColors.surfaceBorder,
+                    ),
                   ),
                 ),
               ),
@@ -151,17 +168,27 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
 
               // Password label + field
-              Text('Password', style: TextStyles.bodyStyle),
+              Text(
+                'Password',
+                style: TextStyles.bodyStyle.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
-                style: TextStyles.bodyStyle.copyWith(fontSize: 14),
+                style: TextStyles.bodyStyle.copyWith(
+                  fontSize: 14,
+                  color: AppColors.textColor,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Enter your password',
-                  hintStyle: TextStyles.smallStyle,
+                  hintStyle: TextStyles.smallStyle.copyWith(
+                    color: AppColors.textMuted,
+                  ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surfaceColor,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
@@ -171,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       _obscurePassword
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      color: Colors.grey,
+                      color: AppColors.textMuted,
                     ),
                     onPressed: () {
                       setState(() {
@@ -181,7 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: const BorderSide(
+                      color: AppColors.surfaceBorder,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -189,7 +218,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: const BorderSide(
+                      color: AppColors.surfaceBorder,
+                    ),
                   ),
                 ),
               ),
@@ -211,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Forget password?',
                     style: TextStyles.smallStyle.copyWith(
-                      color: AppColors.blueColor,
+                      color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -228,24 +259,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: _isSubmitting ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.blueColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.blueDark,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: _isSubmitting
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            color: Colors.white,
+                            color: AppColors.blueDark,
                           ),
                         )
                       : Text(
                           'LOGIN',
                           style: TextStyles.buttonStyle.copyWith(
+                            color: AppColors.blueDark,
                             letterSpacing: 0.5,
                           ),
                         ),

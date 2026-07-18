@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
-import '../../../provider/theme_provider.dart';
+/*import '../../../provider/theme_provider.dart';*/
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import '../auth/login_screen.dart';
@@ -32,19 +32,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
 
     return ListView(
       padding: const EdgeInsets.all(24.0),
       children: [
-        Text('Settings', style: TextStyles.headingStyle),
+        Text(
+          'Settings',
+          style: TextStyles.headingStyle.copyWith(color: AppColors.textColor),
+        ),
         const SizedBox(height: 20),
 
         // Profile card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surfaceColor,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
@@ -77,12 +79,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text(
                       user?.displayName ?? 'Guest',
                       style: TextStyles.bodyStyle.copyWith(
+                        color: AppColors.textColor,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     if (user != null) ...[
                       const SizedBox(height: 2),
-                      Text(user.email, style: TextStyles.smallStyle),
+                      Text(
+                        user.email,
+                        style: TextStyles.smallStyle.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ],
                   ],
                 ),
@@ -91,18 +99,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
 
-        const SizedBox(height: 24),
-
-        // Preferences
-        _SettingTile(
-          icon: Icons.dark_mode_outlined,
-          title: 'Dark mode',
-          trailing: Switch(
-            value: isDarkMode,
-            activeColor: AppColors.blueColor,
-            onChanged: (_) => context.read<ThemeProvider>().toggleTheme(),
-          ),
-        ),
         const SizedBox(height: 12),
         _SettingTile(
           icon: Icons.notifications_outlined,
@@ -179,7 +175,7 @@ class _SettingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AppColors.surfaceColor,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -206,9 +202,9 @@ class _SettingTile extends StatelessWidget {
               ),
               trailing ??
                   (onTap != null
-                      ? const Icon(
+                      ? Icon(
                           Icons.chevron_right,
-                          color: Colors.grey,
+                          color: AppColors.textMuted,
                           size: 20,
                         )
                       : const SizedBox.shrink()),

@@ -167,7 +167,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
     final bool isConfirmStage = _stage == _PinStage.confirm;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -192,7 +192,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                     ),
                     child: Icon(
                       Icons.shield_outlined,
-                      color: AppColors.blueColor,
+                      color: AppColors.blueDark,
                       size: 34,
                     ),
                   ),
@@ -245,8 +245,8 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: filled
-                                ? AppColors.blueColor
-                                : const Color(0xFFD9D9D9),
+                                ? AppColors.blueDark
+                                : AppColors.textSecondary,
                           ),
                         );
                       }),
@@ -353,7 +353,7 @@ class _KeypadButton extends StatelessWidget {
       width: size,
       height: size,
       child: Material(
-        color: transparent ? Colors.transparent : const Color(0xFFE9E9E9),
+        color: transparent ? Colors.transparent : AppColors.blueDark,
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
