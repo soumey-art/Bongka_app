@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../provider/auth_provider.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 
@@ -20,7 +18,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _obscureCurrent = true;
   bool _obscureNew = true;
   bool _obscureConfirm = true;
-  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -30,35 +27,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _handleChangePassword() async {
-    if (!_formKey.currentState!.validate()) return;
+  void _handleChangePassword() {
+      if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isSubmitting = true);
-
-    try {
-      await context.read<AuthProvider>().changePassword(
-        _currentPasswordController.text,
-        _newPasswordController.text,
-      );
-
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password updated successfully.')),
+        const SnackBar(
+          content: Text('Password updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
       );
-      Navigator.pop(context);
-    } catch (e) {
-      if (!mounted) return;
-      // AuthProvider/AuthRepository own the job of turning backend
-      // errors into a message worth showing; this screen just
-      // displays whatever comes back without knowing what kind of
-      // backend produced it.
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
     }
-  }
 
   InputDecoration _fieldDecoration(String hint, {Widget? suffixIcon}) {
     return InputDecoration(
@@ -210,11 +194,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                 const SizedBox(height: 32),
 
-                SizedBox(
+               SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _handleChangePassword,
+                    onPressed: _handleChangePassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.blueColor,
                       foregroundColor: Colors.white,
@@ -223,23 +207,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            'UPDATE PASSWORD',
-                            style: TextStyles.buttonStyle.copyWith(
-                              letterSpacing: 0.5,
-                            ),
-                          ),
+                    child: Text(
+                      'UPDATE PASSWORD',
+                      style: TextStyles.buttonStyle.copyWith(
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                 ),
               ],

@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
       const ReportsScreen(),
       const SettingsScreen(),
     ];
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
