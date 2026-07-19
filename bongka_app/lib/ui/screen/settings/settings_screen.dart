@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Notification',
           trailing: Switch(
             value: _notificationsEnabled,
-            activeColor: AppColors.blueColor,
+            activeThumbColor: AppColors.blueColor,
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
             },

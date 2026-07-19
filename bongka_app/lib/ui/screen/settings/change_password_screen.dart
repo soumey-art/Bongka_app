@@ -49,20 +49,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       hintText: hint,
       hintStyle: TextStyles.smallStyle,
       filled: true,
-      fillColor: Colors.white,
+      fillColor: AppColors.surfaceBorder,
       suffixIcon: suffixIcon,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: AppColors.blueColor),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
     );
   }
@@ -200,8 +200,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   child: ElevatedButton(
                     onPressed: _handleChangePassword,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.blueColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.backgroundColor,
+                      foregroundColor: AppColors.blueDark,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
