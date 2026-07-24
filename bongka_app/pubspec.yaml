@@ -52,6 +52,13 @@ dependencies:
   # Dark mode persistence
   shared_preferences: ^2.3.0
 
+  # File management & storage
+  path_provider: ^2.1.2
+  file_picker: ^8.0.0
+
+  # Share report to other apps (WhatsApp, Gmail, Files, Drive, etc.)
+  share_plus: ^10.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -74,10 +81,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-# To add assets to your application, add an assets section, like this:
+  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

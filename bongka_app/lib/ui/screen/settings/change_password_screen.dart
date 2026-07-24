@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
+import 'package:provider/provider.dart';
+import '../../../provider/auth_provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -18,6 +20,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _obscureCurrent = true;
   bool _obscureNew = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -27,22 +30,33 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  void _handleChangePassword() {
-      if (!_formKey.currentState!.validate()) return;
+  // Replace _handleChangePassword() with:
+  Future<void> _handleChangePassword() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _isLoading = true);
 
+    try {
+      await context.read<AuthProvider>().changePassword(
+        _currentPasswordController.text.trim(),
+        _newPasswordController.text.trim(),
+      );
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Password updated successfully!'),
           backgroundColor: Colors.green,
         ),
       );
-
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          Navigator.pop(context);
-        }
-      });
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed: ${e.toString()}')));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
 
   InputDecoration _fieldDecoration(String hint, {Widget? suffixIcon}) {
     return InputDecoration(
@@ -194,11 +208,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                 const SizedBox(height: 32),
 
-               SizedBox(
+                SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _handleChangePassword,
+                    onPressed: _isLoading ? null : _handleChangePassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.backgroundColor,
                       foregroundColor: AppColors.blueDark,
@@ -207,10 +221,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text(
-                      'UPDATE PASSWORD',
-                      style: TextStyles.buttonStyle.copyWith(
-                        letterSpacing: 0.5,
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(
+                            'UPDATE PASSWORD',
+                            style: TextStyles.buttonStyle.copyWith(
+                              letterSpacing: 0.5,
                       ),
                     ),
                   ),

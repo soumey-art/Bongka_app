@@ -4,7 +4,6 @@ import 'package:pract_app/theme/app_color.dart';
 import 'package:pract_app/theme/app_textStyle.dart';
 import 'package:pract_app/provider/auth_provider.dart';
 import 'package:pract_app/ui/screen/auth/signup_screen.dart';
-import 'package:pract_app/ui/screen/auth/pin_setup.dart';
 import 'package:pract_app/ui/screen/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,20 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await context.read<AuthProvider>().signIn(email, password);
-      final user = context.read<AuthProvider>().currentUser;
 
       if (!mounted) return;
 
-      // Existing users with a PIN already set go straight in.
-      // Accounts without one yet (e.g. created before PIN setup
-      // existed) are sent to set one up, instead of landing in a
-      // half-configured state.
-      final hasPin = user?.pinHash != null && user!.pinHash!.isNotEmpty;
+      // Firebase Authentication is the only login check now — once
+      // sign-in succeeds, go straight to Home.
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => hasPin ? const HomeScreen() : const PinSetupScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } catch (e) {
       if (mounted) {

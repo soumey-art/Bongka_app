@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
-/*import '../../../provider/theme_provider.dart';*/
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import '../auth/login_screen.dart';
@@ -15,10 +14,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // TODO: no notification backend/preferences store exists yet —
-  // this is local-only UI state until one is wired up.
-  bool _notificationsEnabled = true;
-
   Future<void> _handleSignOut(BuildContext context) async {
     await context.read<AuthProvider>().signOut();
     if (!context.mounted) return;
@@ -99,19 +94,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
 
-        const SizedBox(height: 12),
-        _SettingTile(
-          icon: Icons.notifications_outlined,
-          title: 'Notification',
-          trailing: Switch(
-            value: _notificationsEnabled,
-            activeThumbColor: AppColors.blueColor,
-            onChanged: (value) {
-              setState(() => _notificationsEnabled = value);
-            },
-          ),
-        ),
-
         const SizedBox(height: 20),
 
         // Account
@@ -122,18 +104,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
-            );
-          },
-        ),
-        const SizedBox(height: 12),
-        _SettingTile(
-          icon: Icons.star_outline,
-          title: 'Rate Bongka',
-          onTap: () {
-            // TODO: wire up to the store listing once published
-            // (needs the url_launcher package, not yet in pubspec.yaml).
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Thanks for the support! 🙌')),
             );
           },
         ),
@@ -159,11 +129,10 @@ class _SettingTile extends StatelessWidget {
   const _SettingTile({
     required this.icon,
     required this.title,
-    this.trailing,
     this.onTap,
     this.iconColor = AppColors.blueColor,
     this.textColor = AppColors.textColor,
-  });
+  }) : trailing = null;
 
   final IconData icon;
   final String title;

@@ -64,12 +64,35 @@ class AuthRepository {
     return _auth.currentUser;
   }
 
-  //SAVE PIN- persists a hashed PIN for the current user
-  Future<void> savePin(String hashedPin) async {
+  // RESTORE SESSION — Firebase Auth persists the login across app
+  // restarts on its own, but our UserModel lives in Firestore and was
+  // only ever loaded into memory during signIn()/register(). Without
+  // this, reopening the app "loses" that profile data because nothing
+  // re-fetches it on startup. Call this once when the app launches.
+  Future<UserModel?> restoreSession() async {
     final user = _auth.currentUser;
-    if (user == null) {
-      throw StateError('No signed-in user to save a PIN for.');
+    if (user == null) return null;
+    return _firestore.getUser(user.uid);
+  }
+
+  // CHANGE PASSWORD — reauthenticates with the current password, then
+  // updates to the new one. Firebase requires a recent sign-in before
+  // allowing a password change, so we reauthenticate first.
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw StateError('No signed-in user to change the password for.');
     }
-    await _firestore.savePinHash(user.uid, hashedPin);
+
+    final credential = EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
   }
 }

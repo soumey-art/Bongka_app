@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import '../../screen/auth/login_screen.dart';
-import '../../../ui/screen/auth/pin_setup.dart';
 import '../../../provider/auth_provider.dart';
+import '../home/home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -42,9 +42,11 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       if (!context.mounted) return;
+      // No more PIN setup step — a new account goes straight to Home
+      // once Firebase Authentication + the Firestore profile are created.
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const PinSetupScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } catch (e) {
       if (!context.mounted) return;

@@ -1,116 +1,318 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
-import '../../../ui/widget/weekly_activity_chart.dart';
+import '../../../provider/auth_provider.dart';
+import '../../../provider/scan_provider.dart';
+import '../../../model/scan_model.dart';
+import '../../../model/report_model.dart';
+import '../../widget/weekly_activity_chart.dart';
+import '../analyzer/analysis_result_screen.dart';
 
-/// Displays the user's scan history summary and recent scans.
-///
-/// TODO: replace _mockSummary/_mockWeeklyData/_mockScans with real
-/// data from report_repository.dart / ScanProvider once built —
-/// ideally a single ReportModel, so these three stay consistent.
-class ReportsScreen extends StatelessWidget {
+class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
 
-  static const _mockSummary = (totalScans: 24, daysActive: 12, accuracy: 94);
+  @override
+  State<ReportsScreen> createState() => _ReportsScreenState();
+}
 
-  // [Mon, Tue, Wed, Thu, Fri, Sat, Sun] — matches ReportModel.weeklyData.
-  static const List<int> _mockWeeklyData = [3, 5, 2, 6, 4, 1, 3];
+class _ReportsScreenState extends State<ReportsScreen> {
+  // Small getters so the rest of this file (widget builders below) can
+  // keep reading _scans / _stats / _isLoading like before, just backed
+  // by ScanProvider now instead of a local field.
+  List<ScanModel> get _scans => context.watch<ScanProvider>().scans;
+  ReportModel? get _stats => context.watch<ScanProvider>().stats;
+  bool get _isLoading => context.watch<ScanProvider>().isLoadingReports;
+  String? get _errorMessage => context.watch<ScanProvider>().reportsError;
 
-  static const List<_ScanRow> _mockScans = [
-    _ScanRow('Suspicious PayPal email', _Risk.high, '2h ago'),
-    _ScanRow('Bank OTP verification', _Risk.medium, 'Yesterday'),
-    _ScanRow('Delivery tracking link', _Risk.medium, 'Yesterday'),
-    _ScanRow('Newsletter — Shopee', _Risk.safe, '2d ago'),
-    _ScanRow('Team meeting invite', _Risk.safe, '3d ago'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final userId =
+        Provider.of<AuthProvider>(context, listen: false).currentUser?.id ?? '';
+    await context.read<ScanProvider>().loadReports(userId);
+  }
+
+  Future<void> _handleDelete(ScanModel scan) async {
+    final scanProvider = context.read<ScanProvider>();
+    final ok = await scanProvider.deleteScan(scan);
+    if (!mounted) return;
+
+    if (ok) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Scan deleted')));
+      _loadData();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(scanProvider.reportsError ?? 'Could not delete scan'),
+        ),
+      );
+    }
+  }
+
+  void _openScan(ScanModel scan) {
+    context.read<ScanProvider>().loadPastScan(scan);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AnalysisResultScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) return _loadingView();
+    if (_errorMessage != null) return _errorView();
+
     return ListView(
       padding: const EdgeInsets.all(20.0),
       children: [
         Text('Reports', style: TextStyles.headingStyle),
         const SizedBox(height: 20),
-
-        // Your activity summary
         Text(
           'Your activity',
-          style: TextStyles.bodyStyle.copyWith(
-            color: AppColors.textColor,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyles.bodyStyle.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _StatCard(
-                label: 'Total Scans',
-                value: '${_mockSummary.totalScans}',
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _StatCard(
-                label: 'Days Active',
-                value: '${_mockSummary.daysActive}',
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _StatCard(
-                label: 'Accuracy',
-                value: '${_mockSummary.accuracy}%',
-              ),
-            ),
-          ],
-        ),
-
+        _statsRow(),
         const SizedBox(height: 20),
+        _weeklyChart(),
+        const SizedBox(height: 24),
+        _scanListHeader(),
+        const SizedBox(height: 12),
+        if (_scans.isEmpty) _emptyState() else ..._scans.map(_scanTile),
+      ],
+    );
+  }
 
-        Container(
-          padding: const EdgeInsets.all(16),
+  Widget _loadingView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: AppColors.blueColor),
+          const SizedBox(height: 16),
+          Text(
+            'Loading your reports...',
+            style: TextStyles.smallStyle.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_off, color: AppColors.textMuted, size: 48),
+          const SizedBox(height: 16),
+          Text('Could not load reports', style: TextStyles.bodyStyle),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: _loadData,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.blueColor,
+            ),
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _statsRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: _StatCard(
+            label: 'Total Scans',
+            value: '${_stats?.totalScans ?? 0}',
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _StatCard(
+            label: 'Days Active',
+            value: '${_stats?.daysActive ?? 0}',
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _StatCard(
+            label: 'Accuracy',
+            value: '${_stats?.accuracy ?? 0}%',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _weeklyChart() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.surfaceBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'This week',
+            style: TextStyles.smallStyle.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 12),
+          WeeklyActivityChart(
+            weeklyData: _stats?.weeklyData ?? [0, 0, 0, 0, 0, 0, 0],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _scanListHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Recent Scans',
+          style: TextStyles.bodyStyle.copyWith(fontWeight: FontWeight.w700),
+        ),
+        if (_scans.isNotEmpty)
+          Text(
+            'Tap to view • Swipe to delete',
+            style: TextStyles.smallStyle.copyWith(
+              color: AppColors.textMuted,
+              fontSize: 11,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _emptyState() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.inbox_outlined,
+            color: AppColors.textMuted,
+            size: 36,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'No scans yet',
+            style: TextStyles.bodyStyle.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Go to Home and tap Scan Message to get started',
+            style: TextStyles.smallStyle.copyWith(color: AppColors.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _scanTile(ScanModel scan) {
+    final color = scan.riskColor;
+
+    return Dismissible(
+      key: ValueKey(scan.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.centerRight,
+        decoration: BoxDecoration(
+          color: AppColors.redColor.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.delete_outline, color: AppColors.redColor),
+      ),
+      onDismissed: (_) => _handleDelete(scan),
+      child: GestureDetector(
+        onTap: () => _openScan(scan),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: AppColors.surfaceColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.surfaceBorder),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                'This week',
-                style: TextStyles.smallStyle.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
+              Icon(
+                scan.riskLevel == 'SAFE'
+                    ? Icons.check_circle
+                    : Icons.warning_amber_rounded,
+                color: color,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      scan.messageText.length > 40
+                          ? '${scan.messageText.substring(0, 40)}...'
+                          : scan.messageText,
+                      style: TextStyles.bodyStyle.copyWith(fontSize: 14),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${scan.createdAt.day}/${scan.createdAt.month}/${scan.createdAt.year}',
+                      style: TextStyles.smallStyle.copyWith(
+                        color: AppColors.textMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              const WeeklyActivityChart(weeklyData: _mockWeeklyData),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  scan.riskLabel,
+                  style: TextStyles.smallStyle.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-
-        const SizedBox(height: 24),
-
-        Text(
-          'Recent Scans',
-          style: TextStyles.bodyStyle.copyWith(
-            color: AppColors.textColor,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        ..._mockScans.map((scan) => _ScanRowTile(scan: scan)),
-      ],
+      ),
     );
   }
 }
 
 class _StatCard extends StatelessWidget {
   const _StatCard({required this.label, required this.value});
-
   final String label;
   final String value;
 
@@ -128,7 +330,6 @@ class _StatCard extends StatelessWidget {
           Text(
             value,
             style: TextStyles.bodyStyle.copyWith(
-              color: AppColors.textColor,
               fontWeight: FontWeight.w800,
               fontSize: 18,
             ),
@@ -137,110 +338,7 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             textAlign: TextAlign.center,
-            style: TextStyles.smallStyle.copyWith(
-              color: AppColors.textMuted,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-enum _Risk { high, medium, safe }
-
-class _ScanRow {
-  final String title;
-  final _Risk risk;
-  final String timeAgo;
-
-  const _ScanRow(this.title, this.risk, this.timeAgo);
-}
-
-class _ScanRowTile extends StatelessWidget {
-  const _ScanRowTile({required this.scan});
-
-  final _ScanRow scan;
-
-  Color get _riskColor {
-    switch (scan.risk) {
-      case _Risk.high:
-        return AppColors.redColor;
-      case _Risk.medium:
-        return AppColors.yellowColor;
-      case _Risk.safe:
-        return AppColors.greenColor;
-    }
-  }
-
-  String get _riskLabel {
-    switch (scan.risk) {
-      case _Risk.high:
-        return 'HIGH';
-      case _Risk.medium:
-        return 'MED';
-      case _Risk.safe:
-        return 'SAFE';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.surfaceBorder),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            scan.risk == _Risk.safe
-                ? Icons.check_circle
-                : Icons.warning_amber_rounded,
-            color: _riskColor,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              scan.title,
-              style: TextStyles.bodyStyle.copyWith(
-                color: AppColors.textColor,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: _riskColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  _riskLabel,
-                  style: TextStyles.smallStyle.copyWith(
-                    color: _riskColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                scan.timeAgo,
-                style: TextStyles.smallStyle.copyWith(
-                  color: AppColors.textMuted,
-                  fontSize: 11,
-                ),
-              ),
-            ],
+            style: TextStyles.smallStyle.copyWith(fontSize: 11),
           ),
         ],
       ),
