@@ -10,15 +10,6 @@ class AuthProvider extends ChangeNotifier {
   String? error;
 
   bool get isLoggedIn => _authRepo.getCurrentUser() != null;
-
-  // Called once at app startup. Firebase keeps you signed in across
-  // restarts by itself, but this app's session state (currentUser)
-  // also needs to be reloaded from Firestore so the rest of the app
-  // behaves correctly right after a cold start.
-  //
-  // Returns:
-  //   null  -> nobody is signed in, go to Signup/Login
-  //   user  -> already signed in, go straight to Home
   Future<UserModel?> tryAutoLogin() async {
     isLoading = true;
     notifyListeners();

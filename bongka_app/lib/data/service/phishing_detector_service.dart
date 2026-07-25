@@ -84,10 +84,7 @@ class PhishingDetectorService {
       }
     }
 
-    // STEP 5 — email header analysis (if the pasted text is a raw
-    // email source rather than a plain SMS/message). Users can get
-    // "raw source" from Gmail (⋮ → Show original) or any mail client
-    // and paste the whole thing in, headers and all.
+    // STEP 5 — email header analysis 
     threats.addAll(_analyzeHeaders(message));
 
     // STEP 6 — calculate risk score
@@ -115,20 +112,12 @@ class PhishingDetectorService {
       createdAt: DateTime.now(),
     );
   }
-
-  // Pulls the domain out of a header value like:
-  //   "PayPal Support <support@paypa1-secure.com>"
-  // or a bare "someone@example.com".
   String? _extractDomain(String? headerValue) {
     if (headerValue == null) return null;
     final match = RegExp(r'[\w.\-+]+@([\w.\-]+)').firstMatch(headerValue);
     return match?.group(1)?.toLowerCase();
   }
 
-  // Grabs the value of a header line, e.g. _headerValue(text, 'From')
-  // returns everything after "From:" up to the end of that line.
-  // Handles headers being upper/lower/mixed case, which real mail
-  // servers do inconsistently.
   String? _headerValue(String text, String headerName) {
     final match = RegExp(
       '^$headerName'
@@ -139,15 +128,10 @@ class PhishingDetectorService {
     return match?.group(1)?.trim();
   }
 
-  // Heuristic checks on raw email source (headers + body pasted together).
-  // Mirrors what tools like Google's "Show original" / message-header
-  // analyzers look for, but runs fully offline on-device.
   List<ThreatModel> _analyzeHeaders(String message) {
     final threats = <ThreatModel>[];
 
     final fromLine = _headerValue(message, 'From');
-    // No headers at all → this is a plain SMS/chat message, not an
-    // email source. Nothing more to check here.
     if (fromLine == null) return threats;
 
     final replyToLine = _headerValue(message, 'Reply-To');
@@ -158,10 +142,6 @@ class PhishingDetectorService {
     final replyToDomain = _extractDomain(replyToLine);
     final returnPathDomain = _extractDomain(returnPathLine);
 
-    // Reply-To silently redirecting replies to a different domain than
-    // the visible sender is one of the most common phishing tells —
-    // the victim thinks they're replying to their bank, but the
-    // reply actually goes to the attacker.
     if (fromDomain != null &&
         replyToDomain != null &&
         replyToDomain != fromDomain) {
@@ -175,9 +155,6 @@ class PhishingDetectorService {
       );
     }
 
-    // Return-Path (where bounces go) mismatching From is a similar
-    // spoofing signal, though slightly weaker on its own since some
-    // legitimate mailing systems set these differently.
     if (fromDomain != null &&
         returnPathDomain != null &&
         returnPathDomain != fromDomain) {
@@ -191,9 +168,6 @@ class PhishingDetectorService {
       );
     }
 
-    // SPF / DKIM / DMARC — the authentication checks a receiving mail
-    // server actually performs to verify the sender wasn't spoofed.
-    // A real mail client stamps the result in "Authentication-Results".
     if (authResults != null) {
       final lower = authResults.toLowerCase();
       if (lower.contains('spf=fail') || lower.contains('spf=softfail')) {

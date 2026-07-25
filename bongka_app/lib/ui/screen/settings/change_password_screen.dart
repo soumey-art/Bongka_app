@@ -30,7 +30,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  // Replace _handleChangePassword() with:
   Future<void> _handleChangePassword() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);

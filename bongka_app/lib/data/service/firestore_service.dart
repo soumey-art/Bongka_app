@@ -21,8 +21,6 @@ class FirestoreService {
     return UserModel.fromMap(uid, snap.data()!);
   }
 
-  // Stamp the current time onto an existing profile, proving a write
-  // actually happened on this login.
   Future<void> touchLastLogin(String uid) async {
     await _users.doc(uid).set({
       'lastLoginAt': FieldValue.serverTimestamp(),

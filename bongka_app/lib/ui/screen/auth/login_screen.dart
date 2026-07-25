@@ -43,9 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
       await context.read<AuthProvider>().signIn(email, password);
 
       if (!mounted) return;
-
-      // Firebase Authentication is the only login check now — once
-      // sign-in succeeds, go straight to Home.
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -230,7 +227,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   onPressed: () {
-                    // TODO: navigate to forgot password flow
                   },
                   child: Text(
                     'Forget password?',

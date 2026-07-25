@@ -76,7 +76,6 @@ class _HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<_HomeTab> {
-  // Only kept local since it's derived from the user's score, not a scan.
   ({String label, Color color}) _overallRisk(int score) {
     if (score >= 80) return (label: 'Low Risk', color: AppColors.greenColor);
     if (score >= 50)
@@ -160,7 +159,7 @@ class _HomeTabState extends State<_HomeTab> {
 
           _recentActivityHeader(),
           const SizedBox(height: 12),
-          _recentActivity(userId), // <-- this line was missing
+          _recentActivity(userId),
         ],
       ),
     );
@@ -200,7 +199,7 @@ class _HomeTabState extends State<_HomeTab> {
       ),
       child: Row(
         children: [
-          ScoreRing(score: score), // uses the new bigger defaults (96 / 10)
+          ScoreRing(score: score),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -398,42 +397,6 @@ class _HomeTabState extends State<_HomeTab> {
     );
   }
 
-  Widget _tipOfTheDay() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.blueColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.blueColor.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.star, color: AppColors.blueColor, size: 18),
-              const SizedBox(width: 6),
-              Text(
-                'Tip of the Day',
-                style: TextStyles.smallStyle.copyWith(
-                  color: AppColors.blueColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Hover links before clicking — the real URL shows in your browser status bar.',
-            style: TextStyles.bodyStyle.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ActionCard extends StatelessWidget {

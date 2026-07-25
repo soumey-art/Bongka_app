@@ -145,18 +145,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-/// A single row in the Settings list: icon in a soft rounded square,
-/// a title, and either a trailing widget (e.g. a Switch) or a chevron
-/// if the row is tappable.
 class _SettingTile extends StatelessWidget {
   const _SettingTile({
     required this.icon,
     required this.title,
-    this.trailing,
     this.onTap,
     this.iconColor = AppColors.blueColor,
     this.textColor = AppColors.textColor,
-  });
+  }) : trailing = null;
 
   final IconData icon;
   final String title;

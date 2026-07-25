@@ -65,7 +65,7 @@ class ScanProvider extends ChangeNotifier {
       await _firestore.deleteScan(scan.id);
       return true;
     } catch (e) {
-      scans.add(scan); // put it back, delete failed
+      scans.add(scan); 
       reportsError = 'Could not delete scan: $e';
       notifyListeners();
       return false;
@@ -135,10 +135,7 @@ class ScanProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-
-  // Used by the Reports screen when the user taps on an old scan —
-  // loads that saved scan back into currentResult so
-  // AnalysisResultScreen can display it again.
+  
   void loadPastScan(ScanModel scan) {
     currentResult = scan;
     error = null;

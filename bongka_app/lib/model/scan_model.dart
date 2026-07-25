@@ -62,8 +62,6 @@ class ScanModel {
       createdAt: date,
     );
   }
-
-  // Extra info used by the UI, based on this scan's own data.
   Color get riskColor {
     if (riskLevel == 'HIGH') return AppColors.redColor;
     if (riskLevel == 'MEDIUM') return AppColors.yellowColor;

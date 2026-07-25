@@ -1,9 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 
-// Lets the user pick a .txt or .eml file from their phone and returns
-// its text content. Used by the Phishing Detector screen's "Import file"
-// button so the screen doesn't need to touch file_picker / dart:io itself.
 class FileImportService {
   Future<ImportedFile?> pickTextFile() async {
     final result = await FilePicker.platform.pickFiles(

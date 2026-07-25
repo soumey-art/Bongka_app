@@ -37,16 +37,11 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
       duration: const Duration(seconds: 1),
     )..repeat();
 
-    // Cycles through the step labels so the loading screen reflects what
-    // the analyzer is actually doing, instead of a single static line.
     _stepTimer = Timer.periodic(const Duration(milliseconds: 900), (_) {
       if (!mounted) return;
       setState(() => _stepIndex = (_stepIndex + 1) % _steps.length);
     });
 
-    // Deferred to after the first frame — calling this directly in initState
-    // triggers notifyListeners() while the widget tree is still building,
-    // which is what caused the "setState() called during build" error.
     WidgetsBinding.instance.addPostFrameCallback((_) => _runAnalysis());
   }
 
@@ -64,7 +59,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(scanProvider.error!)));
-      Navigator.pop(context); // back to the scan form instead of a stale result
+      Navigator.pop(context);
       return;
     }
 

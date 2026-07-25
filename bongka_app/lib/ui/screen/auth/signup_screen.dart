@@ -42,8 +42,6 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       if (!context.mounted) return;
-      // No more PIN setup step — a new account goes straight to Home
-      // once Firebase Authentication + the Firestore profile are created.
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),

@@ -23,17 +23,11 @@ class _PhishingDetectorScreenState extends State<PhishingDetectorScreen> {
   }
 
   bool _isImporting = false;
-
-  // Device feature: FILE STORAGE.
-  // Lets the user pick a .txt or .eml file from their phone (e.g. an
-  // email exported from Gmail as "Show original" and saved, or a
-  // screenshot-free copy of a suspicious SMS) and loads its contents
-  // straight into the scan box.
   Future<void> _handleImportFile() async {
     setState(() => _isImporting = true);
     try {
       final file = await _fileImportService.pickTextFile();
-      if (file == null) return; // user cancelled
+      if (file == null) return;
 
       if (file.content.trim().isEmpty) {
         if (!mounted) return;
@@ -42,9 +36,6 @@ class _PhishingDetectorScreenState extends State<PhishingDetectorScreen> {
         );
         return;
       }
-
-      // Automatically places the imported content into the detector
-      // text field, ready to scan.
       setState(() {
         _messageController.text = file.content;
       });

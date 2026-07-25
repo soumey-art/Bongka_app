@@ -30,11 +30,6 @@ class AuthRepository {
       password: password,
     );
     final uid = credential.user!.uid;
-
-    // Self-heal: if this account has no Firestore profile yet
-    // (e.g. it was created manually in the console for testing),
-    // create one now. Otherwise just stamp the login time so
-    // there's a visible write to check in the console every time.
     final existing = await _firestore.getUser(uid);
     final user =
         existing ??
@@ -63,21 +58,12 @@ class AuthRepository {
   User? getCurrentUser() {
     return _auth.currentUser;
   }
-
-  // RESTORE SESSION — Firebase Auth persists the login across app
-  // restarts on its own, but our UserModel lives in Firestore and was
-  // only ever loaded into memory during signIn()/register(). Without
-  // this, reopening the app "loses" that profile data because nothing
-  // re-fetches it on startup. Call this once when the app launches.
   Future<UserModel?> restoreSession() async {
     final user = _auth.currentUser;
     if (user == null) return null;
     return _firestore.getUser(user.uid);
   }
 
-  // CHANGE PASSWORD — reauthenticates with the current password, then
-  // updates to the new one. Firebase requires a recent sign-in before
-  // allowing a password change, so we reauthenticate first.
   Future<void> changePassword(
     String currentPassword,
     String newPassword,
