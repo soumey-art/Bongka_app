@@ -68,15 +68,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.surfaceColor),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.surfaceColor),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.surfaceColor),
+        borderSide: const BorderSide(color: AppColors.surfaceColor),
       ),
     );
   }

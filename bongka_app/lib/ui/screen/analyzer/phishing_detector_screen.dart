@@ -1,5 +1,5 @@
+import 'package:bongka_app/data/service/file_import_server.dart';
 import 'package:flutter/material.dart';
-import 'package:pract_app/data/service/file_import_server.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import 'analyzing_screen.dart';
@@ -231,7 +231,7 @@ class _PhishingDetectorScreenState extends State<PhishingDetectorScreen> {
                       borderRadius: BorderRadius.circular(10),
                       side: _messageController.text.trim().isNotEmpty
                           ? BorderSide.none
-                          : BorderSide(color: AppColors.surfaceBorder),
+                          : const BorderSide(color: AppColors.surfaceBorder),
                     ),
                   ),
                 ),

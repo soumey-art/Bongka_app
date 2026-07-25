@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pract_app/theme/app_color.dart';
-import 'package:pract_app/theme/app_textStyle.dart';
-import 'package:pract_app/provider/auth_provider.dart';
-import 'package:pract_app/ui/screen/auth/signup_screen.dart';
-import 'package:pract_app/ui/screen/home/home_screen.dart';
+import 'package:bongka_app/theme/app_color.dart';
+import 'package:bongka_app/theme/app_textStyle.dart';
+import 'package:bongka_app/provider/auth_provider.dart';
+import 'package:bongka_app/ui/screen/auth/signup_screen.dart';
+import 'package:bongka_app/ui/screen/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: _obscurePassword,
                 style: TextStyles.bodyStyle.copyWith(
                   fontSize: 14,
-                  color: AppColors.textColor,
+                  color:AppColors.textColor,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Enter your password',

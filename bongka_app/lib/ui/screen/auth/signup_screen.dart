@@ -70,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.surfaceBorder),
+        borderSide: const BorderSide(color: AppColors.surfaceBorder),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -78,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.surfaceBorder),
+        borderSide: const BorderSide(color: AppColors.surfaceBorder),
       ),
     );
   }

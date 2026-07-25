@@ -1,5 +1,5 @@
+import 'package:bongka_app/ui/widget/score_ring.dart';
 import 'package:flutter/material.dart';
-import 'package:pract_app/ui/widget/score_ring.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../theme/app_color.dart';
@@ -332,7 +332,7 @@ class _HomeTabState extends State<_HomeTab> {
   Widget _emptyState() {
     return Column(
       children: [
-        Icon(Icons.shield_outlined, color: AppColors.textMuted, size: 32),
+        const Icon(Icons.shield_outlined, color: AppColors.textMuted, size: 32),
         const SizedBox(height: 8),
         Text(
           'No scans yet',

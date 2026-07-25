@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
-import '../../../provider/theme_provider.dart' hide ThemeProvider;
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import '../auth/login_screen.dart';
@@ -51,7 +50,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
-    final themeProvider = context.watch<ThemeProvider>();
 
     return ListView(
       padding: const EdgeInsets.all(24.0),
@@ -131,25 +129,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
             );
           },
-        ),
-
-        const SizedBox(height: 10),
-
-        // Wired to the real ThemeProvider (already registered in
-        // main.dart's MultiProvider) instead of local/fake state, and
-        // MaterialApp now actually applies AppTheme.darkTheme when
-        // this is on. See app_theme.dart for the note on which
-        // screens still read AppColors.* directly.
-        _SettingTile(
-          icon: themeProvider.isDarkMode
-              ? Icons.dark_mode
-              : Icons.dark_mode_outlined,
-          title: 'Dark Mode',
-          trailing: Switch.adaptive(
-            value: themeProvider.isDarkMode,
-            activeColor: AppColors.blueColor,
-            onChanged: (value) => themeProvider.setDarkMode(value),
-          ),
         ),
 
         const SizedBox(height: 24),

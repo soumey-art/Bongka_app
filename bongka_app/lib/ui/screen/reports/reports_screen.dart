@@ -113,7 +113,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_off, color: AppColors.textMuted, size: 48),
+          const Icon(Icons.cloud_off, color: AppColors.textMuted, size: 48),
           const SizedBox(height: 16),
           Text('Could not load reports', style: TextStyles.bodyStyle),
           const SizedBox(height: 8),
@@ -209,11 +209,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.inbox_outlined,
-            color: AppColors.textMuted,
-            size: 36,
-          ),
+          Icon(Icons.inbox_outlined, color: AppColors.textMuted, size: 36),
           const SizedBox(height: 12),
           Text(
             'No scans yet',
