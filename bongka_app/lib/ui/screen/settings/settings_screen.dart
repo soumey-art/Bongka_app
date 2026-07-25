@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
+import '../../../provider/theme_provider.dart' hide ThemeProvider;
 import '../../../theme/app_color.dart';
 import '../../../theme/app_textStyle.dart';
 import '../auth/login_screen.dart';
@@ -15,6 +16,29 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _handleSignOut(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Sign out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              'Sign out',
+              style: TextStyle(color: AppColors.redColor),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
     await context.read<AuthProvider>().signOut();
     if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(
@@ -27,6 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
+    final themeProvider = context.watch<ThemeProvider>();
 
     return ListView(
       padding: const EdgeInsets.all(24.0),
@@ -108,6 +133,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
 
+        const SizedBox(height: 10),
+
+        // Wired to the real ThemeProvider (already registered in
+        // main.dart's MultiProvider) instead of local/fake state, and
+        // MaterialApp now actually applies AppTheme.darkTheme when
+        // this is on. See app_theme.dart for the note on which
+        // screens still read AppColors.* directly.
+        _SettingTile(
+          icon: themeProvider.isDarkMode
+              ? Icons.dark_mode
+              : Icons.dark_mode_outlined,
+          title: 'Dark Mode',
+          trailing: Switch.adaptive(
+            value: themeProvider.isDarkMode,
+            activeColor: AppColors.blueColor,
+            onChanged: (value) => themeProvider.setDarkMode(value),
+          ),
+        ),
+
         const SizedBox(height: 24),
 
         _SettingTile(
@@ -129,10 +173,11 @@ class _SettingTile extends StatelessWidget {
   const _SettingTile({
     required this.icon,
     required this.title,
+    this.trailing,
     this.onTap,
     this.iconColor = AppColors.blueColor,
     this.textColor = AppColors.textColor,
-  }) : trailing = null;
+  });
 
   final IconData icon;
   final String title;

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'app_color.dart';
 
 class TextStyles {
-  static const TextStyle titleStyle = TextStyle(
+  static final TextStyle titleStyle = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.bold,
     color: AppColors.textColor,
   );
 
-  static const TextStyle headingStyle = TextStyle(
+  static final TextStyle headingStyle = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.textColor,
   );
 
-  static const TextStyle bodyStyle = TextStyle(
+  static final TextStyle bodyStyle = TextStyle(
     fontSize: 16,
     color: AppColors.textColor,
   );

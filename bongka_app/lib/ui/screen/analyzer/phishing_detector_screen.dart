@@ -170,7 +170,7 @@ class _PhishingDetectorScreenState extends State<PhishingDetectorScreen> {
                     maxLines: null,
                     expands: true,
                     textAlignVertical: TextAlignVertical.top,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textColor,
                       fontSize: 14,
                       height: 1.5,
@@ -231,7 +231,7 @@ class _PhishingDetectorScreenState extends State<PhishingDetectorScreen> {
                       borderRadius: BorderRadius.circular(10),
                       side: _messageController.text.trim().isNotEmpty
                           ? BorderSide.none
-                          : const BorderSide(color: AppColors.surfaceBorder),
+                          : BorderSide(color: AppColors.surfaceBorder),
                     ),
                   ),
                 ),

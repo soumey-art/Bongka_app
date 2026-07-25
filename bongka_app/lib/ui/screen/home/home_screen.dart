@@ -302,10 +302,10 @@ class _HomeTabState extends State<_HomeTab> {
   }
 
   Widget _loadingRow() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
+        const SizedBox(
           width: 18,
           height: 18,
           child: CircularProgressIndicator(
@@ -313,7 +313,7 @@ class _HomeTabState extends State<_HomeTab> {
             color: AppColors.blueColor,
           ),
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Text(
           'Loading activity...',
           style: TextStyle(color: AppColors.textMuted, fontSize: 14),
@@ -332,7 +332,7 @@ class _HomeTabState extends State<_HomeTab> {
   Widget _emptyState() {
     return Column(
       children: [
-        const Icon(Icons.shield_outlined, color: AppColors.textMuted, size: 32),
+        Icon(Icons.shield_outlined, color: AppColors.textMuted, size: 32),
         const SizedBox(height: 8),
         Text(
           'No scans yet',
@@ -456,7 +456,7 @@ class _ActionCard extends StatelessWidget {
     final bg = filled ? AppColors.blueColor : AppColors.surfaceColor;
     final fg = filled ? AppColors.blueDark : AppColors.textColor;
     final subFg = filled
-        ? Colors.white .withValues(alpha: 0.7)
+        ? Colors.white.withValues(alpha: 0.7)
         : AppColors.textMuted;
 
     return Material(
