@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pract_app/ui/widget/score_ring.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../theme/app_color.dart';
@@ -91,6 +92,47 @@ class _HomeTabState extends State<_HomeTab> {
     }
   }
 
+  Widget _scanInfoCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.info_outline, color: AppColors.blueColor),
+              const SizedBox(width: 8),
+              Text(
+                'What can you scan?',
+                style: TextStyles.bodyStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'You can paste suspicious:\n'
+            '• Emails\n'
+            '• SMS/Text Messages\n'
+            '• WhatsApp or Telegram messages\n'
+            '• Facebook or Messenger messages\n'
+            '• Website URLs or links\n\n'
+            'The app will analyze the content and estimate whether it is safe or a phishing attempt.',
+            style: TextStyles.smallStyle.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
@@ -107,13 +149,18 @@ class _HomeTabState extends State<_HomeTab> {
           const SizedBox(height: 20),
           _scoreCard(score),
           const SizedBox(height: 16),
+
           _actionCards(context),
+
+          const SizedBox(height: 16),
+
+          _scanInfoCard(),
+
           const SizedBox(height: 24),
+
           _recentActivityHeader(),
           const SizedBox(height: 12),
-          _recentActivity(userId),
-          const SizedBox(height: 8),
-          _tipOfTheDay(),
+          _recentActivity(userId), // <-- this line was missing
         ],
       ),
     );
@@ -153,27 +200,7 @@ class _HomeTabState extends State<_HomeTab> {
       ),
       child: Row(
         children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  value: score / 100,
-                  strokeWidth: 7,
-                  backgroundColor: AppColors.surfaceBorder,
-                  valueColor: const AlwaysStoppedAnimation(AppColors.blueColor),
-                ),
-                Text(
-                  '$score%',
-                  style: TextStyles.bodyStyle.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ScoreRing(score: score), // uses the new bigger defaults (96 / 10)
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -212,31 +239,16 @@ class _HomeTabState extends State<_HomeTab> {
   }
 
   Widget _actionCards(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _ActionCard(
-            icon: Icons.mail_outline,
-            title: 'Scan Message',
-            subtitle: 'Detect phishing',
-            filled: true,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PhishingDetectorScreen()),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _ActionCard(
-            icon: Icons.bar_chart_outlined,
-            title: 'View Reports',
-            subtitle: 'Your history',
-            filled: false,
-            onTap: widget.onViewReports,
-          ),
-        ),
-      ],
+    return _ActionCard(
+      icon: Icons.mail_outline,
+      title: 'Scan Message',
+      subtitle:
+          'Paste suspicious messages, emails, or links to check for phishing.',
+      filled: true,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PhishingDetectorScreen()),
+      ),
     );
   }
 
@@ -444,7 +456,7 @@ class _ActionCard extends StatelessWidget {
     final bg = filled ? AppColors.blueColor : AppColors.surfaceColor;
     final fg = filled ? AppColors.blueDark : AppColors.textColor;
     final subFg = filled
-        ? AppColors.blueDark.withValues(alpha: 0.7)
+        ? Colors.white .withValues(alpha: 0.7)
         : AppColors.textMuted;
 
     return Material(

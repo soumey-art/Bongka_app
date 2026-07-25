@@ -7,11 +7,10 @@ class ScoreRing extends StatelessWidget {
   const ScoreRing({
     super.key,
     required this.score,
-    this.size = 72,
-    this.strokeWidth = 7,
+    this.size = 96, // was 72
+    this.strokeWidth = 10, // was 7
   });
 
-  /// 0-100. Values outside that range are clamped before rendering.
   final int score;
   final double size;
   final double strokeWidth;
@@ -40,7 +39,11 @@ class ScoreRing extends StatelessWidget {
           ),
           Text(
             '$clamped%',
-            style: TextStyles.bodyStyle.copyWith(fontWeight: FontWeight.w700),
+            style: TextStyles.bodyStyle.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize:
+                  size / 4.3, // scales with the ring instead of staying fixed
+            ),
           ),
         ],
       ),
