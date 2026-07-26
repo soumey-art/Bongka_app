@@ -36,7 +36,7 @@ class ScanModel {
     };
   }
 
-  factory ScanModel.fromMap(String id, Map<String, dynamic> map) {
+  static ScanModel fromMap(String id, Map<String, dynamic> map) {
     List<ThreatModel> threatList = [];
     if (map['threats'] != null) {
       for (var t in map['threats']) {
@@ -96,29 +96,5 @@ class ScanModel {
       return 'Google Safe Browsing found no match for these links. This does not guarantee they are safe.';
     }
     return 'No links were found to check.';
-  }
-
-  String get reportText {
-    String threatsText = 'No threats detected.';
-    if (threats.isNotEmpty) {
-      List<String> lines = [];
-      for (var t in threats) {
-        lines.add('${t.severity}: ${t.description}');
-      }
-      threatsText = lines.join('\n');
-    }
-
-    String linksText = 'None found.';
-    if (suspiciousLinks.isNotEmpty) {
-      linksText = suspiciousLinks.join('\n');
-    }
-
-    return 'BONGKA REPORT\n'
-        'Date: $createdAt\n'
-        'Risk Score: $riskScore/100 ($riskLevel)\n\n'
-        'Scanned content:\n$messageText\n\n'
-        'Threats (${threats.length}):\n$threatsText\n\n'
-        'Suspicious URLs:\n$linksText\n\n'
-        'Recommendation:\n$recommendation';
   }
 }

@@ -3,12 +3,14 @@ class UserModel {
   final String email;
   final String displayName;
   final int cyberSafetyScore;
+  final String? pinHash;
 
   UserModel({
     required this.id,
     required this.email,
     required this.displayName,
     required this.cyberSafetyScore,
+    this.pinHash,
   });
 
   // Used when SAVING to Firestore (CREATE)
@@ -16,10 +18,11 @@ class UserModel {
     'email': email,
     'displayName': displayName,
     'cyberSafetyScore': cyberSafetyScore,
+    if (pinHash != null) 'pinHash': pinHash,
   };
 
   // Used when READING from Firestore (READ)
-  factory UserModel.fromMap(String id, Map<String, dynamic> map) {
+  static UserModel fromMap(String id, Map<String, dynamic> map) {
     return UserModel(
       id: id,
       email: map['email'] ?? '',

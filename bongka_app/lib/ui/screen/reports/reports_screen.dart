@@ -17,9 +17,6 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  // Small getters so the rest of this file (widget builders below) can
-  // keep reading _scans / _stats / _isLoading like before, just backed
-  // by ScanProvider now instead of a local field.
   List<ScanModel> get _scans => context.watch<ScanProvider>().scans;
   ReportModel? get _stats => context.watch<ScanProvider>().stats;
   bool get _isLoading => context.watch<ScanProvider>().isLoadingReports;
